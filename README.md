@@ -1,2 +1,5 @@
-tasks to do now:
-1. the player should go to the center square path if it has covered one cycle
+conditions:
+
+player has zero tokens in the playing area
+player has 1 token in the playing area
+player has more than 1 token in the playing area

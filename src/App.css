@@ -6,7 +6,6 @@ main {
 .dice {
   width: 50px;
   height: 50px;
-  background-color: white;
   position: relative;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -63,6 +62,34 @@ main {
   width: 12px;
   height: 6px;
   background: red;
+  border-radius: 50%;
+  position: absolute;
+  top: 20px;
+  left: -6px;
+}
+
+
+
+.token-cone-green {
+  position: relative;
+  height: 0;
+  width: 0;
+  transform: translateY(-12px);
+}
+
+.cone-green {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid green;
+  transform: translateX(-10px);
+}
+
+.base-green {
+  width: 12px;
+  height: 6px;
+  background: green;
   border-radius: 50%;
   position: absolute;
   top: 20px;
