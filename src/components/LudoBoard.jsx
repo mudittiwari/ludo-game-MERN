@@ -18,7 +18,7 @@ const LudoBoard = () => {
         setIsRolling(true);
         const newValue = Math.floor(Math.random() * 6) + 1;
         setTimeout(() => {
-            setDiceValue(newValue);
+            setDiceValue(4);
             setIsRolling(false);
             setMovement(true);
         }, 500);

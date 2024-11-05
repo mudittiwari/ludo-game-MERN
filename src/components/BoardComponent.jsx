@@ -13,7 +13,6 @@ const BoardComponent = () => {
     ];
 
     const [onSecondaryPath, setOnSecondaryPath] = useState(false);
-    const [tokenIndex, setTokenIndex] = useState(0);
 
     const primaryPath = [
         { row: 8, col: 0 }, { row: 7, col: 0 }, { row: 6, col: 0 },
@@ -27,29 +26,45 @@ const BoardComponent = () => {
         { row: 8, col: 5 }, { row: 8, col: 4 }, { row: 8, col: 3 }, { row: 8, col: 2 }, { row: 8, col: 1 }
     ];
     const secondaryPath = [
-        { row: 8, col: 0 }, { row: 7, col: 0 }, { row: 7, col: 1 }, { row: 7, col: 2 }, { row: 7, col: 3 }, { row: 7, col: 4 }, { row: 7, col: 5 }
+        { row: 8, col: 0 }, { row: 7, col: 0 }, { row: 7, col: 1 }, { row: 7, col: 2 }, { row: 7, col: 3 }, { row: 7, col: 4 }, { row: 7, col: 5 }, { row: 7, col: 6 }
     ];
 
     const animateTokenMovement = (index, steps) => {
         let step = 0;
-        const currentPath = onSecondaryPath ? secondaryPath : primaryPath;
-        const pathLength = currentPath.length;
         const moveStepByStep = () => {
-            if (step < steps) {
-                setRedPlayerTokensPosi(prevPositions => {
-                    const updatedPositions = [...prevPositions];
-                    const nextPositionIndex = (prevPositions[index][2] || 0) + 1;
-                    if (nextPositionIndex < pathLength) {
-                        updatedPositions[index] = [
-                            currentPath[nextPositionIndex].row,
-                            currentPath[nextPositionIndex].col,
-                            nextPositionIndex
-                        ];
+            setRedPlayerTokensPosi(prevPositions => {
+                const updatedPositions = [...prevPositions];
+                const token = updatedPositions[index];
+                const onSecondaryPath = token[3] || false;
+                const currentPath = onSecondaryPath ? secondaryPath : primaryPath;
+                const pathLength = currentPath.length;
+                const nextPositionIndex = (token[2] || 0) + 1;
+                if (onSecondaryPath) {
+                    const remainingSteps = secondaryPath.length - (token[2] || 0) - 1;
+                    if (steps > remainingSteps) {
+                        return prevPositions;
                     }
-                    // console.log(`Token ${index} moving to position ${updatedPositions[index]}`);
-                    return updatedPositions;
-                });
-                step++;
+                }
+
+                if (nextPositionIndex < pathLength) {
+                    updatedPositions[index] = [
+                        currentPath[nextPositionIndex].row,
+                        currentPath[nextPositionIndex].col,
+                        nextPositionIndex,
+                        onSecondaryPath
+                    ];
+                } else if (!onSecondaryPath) {
+                    updatedPositions[index] = [
+                        secondaryPath[0].row,
+                        secondaryPath[0].col,
+                        0,           
+                        true   
+                    ];
+                }
+                return updatedPositions;
+            });
+            step++;
+            if (step < steps) {
                 setTimeout(moveStepByStep, 300);
             } else {
                 setMovement(false);
@@ -57,6 +72,7 @@ const BoardComponent = () => {
         };
         moveStepByStep();
     };
+    
 
     const cellEventListener = (i, j) => {
         if (movement) {
@@ -68,7 +84,6 @@ const BoardComponent = () => {
                 const posiExists = index !== -1;
                 console.log(posiExists, index, posiArray, redPlayerTokensPosi)
                 if (posiExists) {
-                    console.log("posiexistes")
                     const posiExistsInInitial = initialTokensPositions.some(subArray =>
                         subArray.length === posiArray.length && subArray.every((value, idx) => value === posiArray[idx])
                     );
@@ -82,7 +97,6 @@ const BoardComponent = () => {
                         });
                     }
                     else {
-                        console.log("hello world")
                         const tokenIndex = redPlayerTokensPosi.findIndex(pos =>
                             pos[0] === i && pos[1] === j
                         );
