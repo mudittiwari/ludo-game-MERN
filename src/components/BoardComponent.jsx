@@ -1,11 +1,11 @@
-import { forwardRef, memo, useContext, useImperativeHandle, useState } from "react";
+import { forwardRef, memo, useContext, useEffect, useImperativeHandle, useState } from "react";
 import redPlayerContext from "../context/RedPlayerContext";
 import diceContext from "../context/DiceContext";
 import greenPlayerContext from "../context/GreenPlayerContext";
 import gameInfoContext from "../context/GameInfoContext";
-import { initialTokensPositions,greenInitialTokenPositions,primaryPath,primaryPathGreen,secondaryPath,secondaryPathGreen } from "../utils/Paths";
+import { initialTokensPositions, greenInitialTokenPositions, primaryPath, primaryPathGreen, secondaryPath, secondaryPathGreen } from "../utils/Paths";
 
-const BoardComponent = () => {
+const BoardComponent = () =>{
     const { diceValue, movement, setMovement } = useContext(diceContext);
     const { redPlayerTokensPosi, setRedPlayerTokensPosi } = useContext(redPlayerContext);
     const { greenPlayerTokensPosi, setGreenPlayerTokensPosi } = useContext(greenPlayerContext);
@@ -56,14 +56,14 @@ const BoardComponent = () => {
                 setTimeout(moveStepByStep, 300);
             } else {
                 setMovement(false);
-                if(steps != 6)
-                    setPlayerTurn((playerTurn+1)%numberOfPlayer);
+                if (steps != 6)
+                    setPlayerTurn((playerTurn + 1) % numberOfPlayer);
             }
         };
         moveStepByStep();
     };
 
-    const animateTokenMovementGreen = (index, steps)=>{
+    const animateTokenMovementGreen = (index, steps) => {
         const tokenPosition = greenPlayerTokensPosi[index];
         const onSecondaryPath = tokenPosition[3] || false;
         const currentPositionIndex = tokenPosition[2] || 0;
@@ -108,15 +108,14 @@ const BoardComponent = () => {
                 setTimeout(moveStepByStep, 300);
             } else {
                 setMovement(false);
-                if(steps != 6)
-                    setPlayerTurn((playerTurn+1)%numberOfPlayer);
+                if (steps != 6)
+                    setPlayerTurn((playerTurn + 1) % numberOfPlayer);
             }
         };
         moveStepByStep();
     }
 
     const cellEventListener = (i, j) => {
-        console.log(i,j,movement);
         if (movement) {
             if (playerTurn == 0) {
                 if (diceValue === 6) {
@@ -164,7 +163,7 @@ const BoardComponent = () => {
                     }
                 }
             }
-            else if(playerTurn == 1){
+            else if (playerTurn == 1) {
                 if (diceValue === 6) {
                     const posiArray = [i, j];
                     const index = greenPlayerTokensPosi.findIndex(subArray => {
@@ -196,11 +195,11 @@ const BoardComponent = () => {
                     }
                 } else {
                     const posiArray = [i, j];
-                    const posiExistsInInitial = initialTokensPositions.some(subArray =>
+                    const posiExistsInInitial = greenInitialTokenPositions.some(subArray =>
                         subArray.length === posiArray.length && subArray.every((value, idx) => value === posiArray[idx])
                     );
                     if (!posiExistsInInitial) {
-                        const tokenIndex = redPlayerTokensPosi.findIndex(pos =>
+                        const tokenIndex = greenPlayerTokensPosi.findIndex(pos =>
                             pos[0] === i && pos[1] === j
                         );
                         if (tokenIndex !== -1) {

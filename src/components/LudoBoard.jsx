@@ -1,12 +1,12 @@
 // src/components/LudoBoard.js
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import BoardComponent from './BoardComponent';
 import redPlayerContext from '../context/RedPlayerContext';
 import greenPlayerContext from '../context/GreenPlayerContext';
 import diceContext from '../context/DiceContext';
 import gameInfoContext from '../context/GameInfoContext';
-import { countEqualElements } from '../utils/Utils';
-import { initialTokensPositions,greenInitialTokenPositions } from '../utils/Paths';
+import { countEqualElements, findUnmatchedElements } from '../utils/Utils';
+import { initialTokensPositions, greenInitialTokenPositions} from "../utils/Paths";
 
 const LudoBoard = () => {
     const [diceValue, setDiceValue] = useState(1);
@@ -30,20 +30,24 @@ const LudoBoard = () => {
         if (isRolling) return;
         setIsRolling(true);
         const newValue = Math.floor(Math.random() * 6) + 1;
-        // const newValue = 5;
+        // const newValue = 4;
         setTimeout(() => {
             setDiceValue(newValue);
             setIsRolling(false);
             setMovement(true);
-            if(playerTurn==0){
-                let count=countEqualElements(redPlayerTokensPosi,initialTokensPositions);
-                if(count == 4 && newValue!=6)
-                    setPlayerTurn((playerTurn+1)%numberOfPlayer);
+            if (playerTurn == 0) {
+                let count = countEqualElements(redPlayerTokensPosi, initialTokensPositions);
+                if (count == 4 && newValue != 6){
+                    setPlayerTurn((playerTurn + 1) % numberOfPlayer);
+                    setMovement(false);
+                }
             }
-            else if(playerTurn==1){
-                let count=countEqualElements(greenPlayerTokensPosi,greenInitialTokenPositions);
-                if(count == 4 && newValue!=6)
-                    setPlayerTurn((playerTurn+1)%numberOfPlayer);
+            else if (playerTurn == 1) {
+                let count = countEqualElements(greenPlayerTokensPosi, greenInitialTokenPositions);
+                if (count == 4 && newValue != 6){
+                    setPlayerTurn((playerTurn + 1) % numberOfPlayer);
+                    setMovement(false);
+                }
             }
         }, 500);
     };
@@ -84,12 +88,12 @@ const LudoBoard = () => {
                                 <button
                                     onClick={rollDice}
                                     className="ml-4 px-4 py-2 bg-black text-white rounded"
-                                    disabled={isRolling}
+                                    disabled={isRolling || movement}
                                 >
                                     Roll Dice
                                 </button>
                             </div>
-                            <BoardComponent />
+                            <BoardComponent/>
                         </div>
                     </redPlayerContext.Provider>
                 </greenPlayerContext.Provider>
